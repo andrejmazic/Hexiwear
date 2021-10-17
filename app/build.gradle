@@ -1,0 +1,116 @@
+apply plugin: 'com.android.application'
+//apply plugin: 'android-apt'
+
+android {
+    compileSdkVersion 31
+    buildToolsVersion '25.0.3'
+
+    defaultConfig {
+        applicationId "com.wolkabout.hexiwear"
+        minSdkVersion 25
+        targetSdkVersion 31
+        versionCode 29
+        versionName "1.29"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "version"
+
+    productFlavors {
+        staging {
+            dimension "version"
+            applicationId "com.wolkabout.hexiwear"
+            applicationIdSuffix ".staging"
+            versionNameSuffix "-staging"
+            buildConfigField 'String', 'MQTT_HOST', '"ssl://staging.wolksense.com:8883"'
+        }
+
+        production {
+            dimension "version"
+            applicationId "com.wolkabout.hexiwear"
+            applicationIdSuffix ".production"
+            versionNameSuffix "-production"
+            buildConfigField 'String', 'MQTT_HOST', '"ssl://wolksense.com:8883"'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/services/org.androidannotations.plugin.AndroidAnnotationsPlugin'
+        exclude 'asm-license.txt'
+    }
+    if (project.hasProperty("hexiwear.properties") && file(project.property("hexiwear.properties")).exists()) {
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(file(project.property("hexiwear.properties"))))
+
+        signingConfigs {
+            release {
+                storeFile file(properties['keystore'])
+                storePassword properties['keystore.password']
+                keyAlias properties['keyAlias']
+                keyPassword properties['keyPassword']
+            }
+        }
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
+        }
+
+
+    }
+}
+
+def SupportVersion = '28.0.0'
+def AAVersion = '4.4.0'
+def ParcelerVersion = '4.12'
+def RestAndroidVersion = '1.1.9'
+
+//TODO check import of annotations
+dependencies {
+    // Android support libraries
+    implementation "com.android.support:appcompat-v7:$SupportVersion"
+    implementation "com.android.support:design:$SupportVersion"
+    implementation "com.android.support:cardview-v7:$SupportVersion"
+
+    // Android annotations
+    annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
+    implementation "org.androidannotations:rest-spring-api:$AAVersion"
+    implementation "org.androidannotations:rest-spring:$AAVersion"
+
+    // Parceler
+    implementation 'org.parceler:parceler-api:1.1.12'
+    annotationProcessor 'org.parceler:parceler:1.1.12'
+
+    stagingImplementation "com.wolkabout:restandroid:${RestAndroidVersion}.STAGING"
+    productionImplementation "com.wolkabout:restandroid:${RestAndroidVersion}.PRODUCTION"
+
+    implementation 'com.wolkabout:wolk:1.0.2'
+
+    implementation 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.7.5'
+
+//    debugImplementation 'com.google.firebase:firebase-crash:16.2.1'
+}
+
+//apt {
+//    arguments {
+//        androidManifestFile variant.outputs[0].processResources.manifestFile
+//    }
+//}
+
+//TODO Ask for Firebase account creds
+//apply plugin: 'com.google.gms.google-services'
