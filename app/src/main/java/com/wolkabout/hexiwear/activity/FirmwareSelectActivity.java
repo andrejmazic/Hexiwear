@@ -24,7 +24,6 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.os.Environment;
@@ -39,7 +38,7 @@ import com.wolkabout.hexiwear.R;
 import com.wolkabout.hexiwear.adapter.FirmwareListAdapter;
 import com.wolkabout.hexiwear.model.otap.Image;
 import com.wolkabout.hexiwear.service.FirmwareUpdateService;
-//import com.wolkabout.hexiwear.service.FirmwareUpdateService_;
+import com.wolkabout.hexiwear.service.FirmwareUpdateService_;
 import com.wolkabout.hexiwear.util.ByteUtils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -70,6 +69,7 @@ public class FirmwareSelectActivity extends AppCompatActivity implements Service
     private static final int PREFIX_LENGTH = 14;
     private static final String FACTORY_SETTINGS = "factory_settings";
 
+
     @ViewById
     Toolbar toolbar;
 
@@ -91,10 +91,8 @@ public class FirmwareSelectActivity extends AppCompatActivity implements Service
         firmwareList.setAdapter(adapter);
         addFactorySettingImages();
         discoverFirmwareImages();
-        Intent intent = new Intent(this, FirmwareUpdateService.class);
-        FirmwareSelectActivity.this.startActivity(intent);
-//        FirmwareUpdateService_.intent(this).start();
-//        bindService(FirmwareUpdateService_.intent(this).get(), this, 0);
+        FirmwareUpdateService_.intent(this).start();
+        bindService(FirmwareUpdateService_.intent(this).get(), this, 0);
     }
 
     void addFactorySettingImages() {
