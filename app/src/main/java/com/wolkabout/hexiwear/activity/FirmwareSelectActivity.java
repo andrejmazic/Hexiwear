@@ -40,6 +40,7 @@ import com.wolkabout.hexiwear.adapter.FirmwareListAdapter;
 import com.wolkabout.hexiwear.model.otap.Image;
 import com.wolkabout.hexiwear.service.FirmwareUpdateService;
 //import com.wolkabout.hexiwear.service.FirmwareUpdateService_;
+//import com.wolkabout.hexiwear.service.FirmwareUpdateService_;
 import com.wolkabout.hexiwear.util.ByteUtils;
 
 import org.androidannotations.annotations.AfterViews;
